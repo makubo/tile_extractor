@@ -37,7 +37,6 @@ window.onload = function () {
 
         // Read in the image file as a data URL.
         reader.readAsDataURL(f);
-
     };
 
     document.getElementById("tile_height").onchange = function (e) {
@@ -80,91 +79,96 @@ window.onload = function () {
 
         downloadTile(mouseCanvasX, mouseCanvasY);
     };
+};
 
-    function getTileSize() {
-        tile_height = parseInt(document.getElementById("tile_height").value);
-        tile_width = parseInt(document.getElementById("tile_width").value);
-        document.getElementById("tile_shiftx").max = tile_height - 1;
-        document.getElementById("tile_shifty").max = tile_width - 1;
+function getTileSize() {
+    tile_height = parseInt(document.getElementById("tile_height").value);
+    tile_width = parseInt(document.getElementById("tile_width").value);
+    document.getElementById("tile_shiftx").max = tile_height - 1;
+    document.getElementById("tile_shifty").max = tile_width - 1;
+};
+
+function getTileShifts() {
+    tile_shiftx = parseInt(document.getElementById("tile_shiftx").value);
+    tile_shifty = parseInt(document.getElementById("tile_shifty").value);
+};
+
+function redraw() {
+    context.drawImage(source_image, 0, 0);
+    drawGrid();
+};
+
+function drawGrid() {
+    context.beginPath();
+    for (var y = 0; y <= canvas_height / tile_height; y++) {
+        context.moveTo(0, y * tile_height + tile_shifty);
+        context.lineTo(canvas_width, y * tile_height + tile_shifty);
     };
-
-    function getTileShifts() {
-        tile_shiftx = parseInt(document.getElementById("tile_shiftx").value);
-        tile_shifty = parseInt(document.getElementById("tile_shifty").value);
+    
+    for (var x = 0; x <= canvas_width / tile_width; x++) {
+        context.moveTo(x * tile_width + tile_shiftx, 0);
+        context.lineTo(x * tile_width + tile_shiftx, canvas_height);
     };
+    
+    context.stroke();
+};
 
-    function redraw() {
-        context.drawImage(source_image, 0, 0);
-        drawGrid();
+function downloadTile(x, y) {
+    var temp_canvas = document.createElement("canvas");
+    var temp_context = temp_canvas.getContext("2d");
+    var a = document.createElement("a");
+
+    temp_canvas.width = tile_width;
+    temp_canvas.height = tile_height;
+
+    var tileX = getTileCoordinate(x, y).x;
+    var tileY = getTileCoordinate(x, y).y;
+
+    temp_context.drawImage(source_image, -tileX, -tileY);
+    var tileURL = temp_canvas.toDataURL();
+
+    a.style.display = "none";
+    a.download = "tile_" + tile_width + "x" + tile_height + "_"
+            + getTileIndex(x, y).x + "." + getTileIndex(x, y).y + ".png";
+    document.body.appendChild(a);
+    a.href = tileURL;
+    a.click();
+    a.remove();
+    temp_canvas.remove();
+};
+
+function highlightTile(x, y) {
+    var tileCoord = getTileCoordinate(x, y);
+    context.fillRect(tileCoord.x, tileCoord.y, tile_width, tile_height);
+};
+
+function getTileIndex(x, y) {
+    return {
+        x: Math.floor((x - getShifts().x) / tile_width),
+        y: Math.floor((y - getShifts().y) / tile_height)
     };
+};
 
-    function drawGrid() {
-        context.beginPath();
-        //var procY;
-        for (var y = 0; y <= canvas_height / tile_height; y++) {
-            context.moveTo(0, y * tile_height + tile_shifty);
-            context.lineTo(canvas_width, y * tile_height + tile_shifty);
-        };
-        for (var x = 0; x <= canvas_width / tile_width; x++) {
-            context.moveTo(x * tile_width + tile_shiftx, 0);
-            context.lineTo(x * tile_width + tile_shiftx, canvas_height);
-        };
-        context.stroke();
+function getTileCoordinate(x, y) {
+    return {
+        x: getTileIndex(x, y).x * tile_width + getShifts().x,
+        y: getTileIndex(x, y).y * tile_height + getShifts().y
     };
+};
 
-    function downloadTile(x, y) {
-        var temp_canvas = document.createElement("canvas");
-        var temp_context = temp_canvas.getContext("2d");
-        var a = document.createElement("a");
-
-        temp_canvas.width = tile_width;
-        temp_canvas.height = tile_height;
-
-        var tileX = getTileCoordinate(x, y)[0];
-        var tileY = getTileCoordinate(x, y)[1];
-
-        temp_context.drawImage(source_image, -tileX, -tileY);
-        var tileURL = temp_canvas.toDataURL();
-
-        a.style.display = "none";
-        a.download = "tile_" + tile_width + "x" + tile_height + "_"
-                + getTileIndex(x, y)[0] + "." + getTileIndex(x, y)[1] + ".png";
-        document.body.appendChild(a);
-        a.href = tileURL;
-        a.click();
-        a.remove();
-        temp_canvas.remove();
+function getShifts() {
+    var shiftx = 0;
+    var shifty = 0;
+    if (tile_shiftx > 0) {
+        shiftx = tile_shiftx - tile_width;
     };
-
-    function highlightTile(x, y) {
-        var tileCoord = getTileCoordinate(x, y);
-        context.fillRect(tileCoord[0], tileCoord[1], tile_width, tile_height);
+    
+    if (tile_shifty > 0) {
+        shifty = tile_shifty - tile_height;
+    }
+    ;
+    return {
+        x: shiftx,
+        y: shifty
     };
-
-    function getTileIndex(x, y) {
-        return [
-            Math.floor((x - getShifts().x) / tile_width),
-            Math.floor((y - getShifts().y) / tile_height)
-        ];
-    };
-
-    function getTileCoordinate(x, y) {
-        return [
-            getTileIndex(x, y)[0] * tile_width + getShifts().x,
-            getTileIndex(x, y)[1] * tile_height + getShifts().y
-        ];
-    };
-
-    function getShifts() {
-        var shiftx = 0;
-        var shifty = 0;
-        if (tile_shiftx > 0) {
-            shiftx = tile_shiftx - tile_width;
-        };
-        if (tile_shifty > 0) {
-            shifty = tile_shifty - tile_height;
-        };
-        return {x: shiftx, y: shifty};
-    };
-
 };
