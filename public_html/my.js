@@ -20,6 +20,8 @@ window.onload = function () {
         context.drawImage(this, 0, 0);
         canvas_height = this.height;
         canvas_width = this.width;
+        document.getElementById("tile_height").max = this.height;
+        document.getElementById("tile_width").max = this.width;
     };
 
     // Got from here https://www.html5rocks.com/en/tutorials/file/dndfiles/
