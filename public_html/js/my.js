@@ -106,12 +106,12 @@ function drawGrid() {
         context.moveTo(0, y * tile_height + tile_shifty);
         context.lineTo(canvas_width, y * tile_height + tile_shifty);
     };
-    
+
     for (var x = 0; x <= canvas_width / tile_width; x++) {
         context.moveTo(x * tile_width + tile_shiftx, 0);
         context.lineTo(x * tile_width + tile_shiftx, canvas_height);
     };
-    
+
     context.stroke();
 };
 
@@ -164,11 +164,9 @@ function getShifts() {
     if (tile_shiftx > 0) {
         shiftx = tile_shiftx - tile_width;
     };
-    
     if (tile_shifty > 0) {
         shifty = tile_shifty - tile_height;
-    }
-    ;
+    };
     return {
         x: shiftx,
         y: shifty
