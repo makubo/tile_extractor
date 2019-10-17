@@ -6,6 +6,8 @@ var canvas_height;
 var canvas_width;
 var tile_shiftx;
 var tile_shifty;
+var fixSize = false;
+var fixShift = false;
 
 window.onload = function () {
     context = document.getElementById("main_canvas").getContext('2d');
@@ -39,26 +41,34 @@ window.onload = function () {
 
         // Read in the image file as a data URL.
         reader.readAsDataURL(f);
+
+        document.getElementById("file_label").innerHTML = f.name;
     };
 
     document.getElementById("tile_height").onchange = function (e) {
+        syncTileSizes();
         getTileSize();
         redraw();
     };
 
     document.getElementById("tile_width").onchange = function (e) {
-        getTileSize();
-        redraw();
+        if (!fixSize) {
+            getTileSize();
+            redraw();
+        }
     };
 
     document.getElementById("tile_shiftx").onchange = function (e) {
+        syncTileShifts();
         getTileShifts();
         redraw();
     };
 
     document.getElementById("tile_shifty").onchange = function (e) {
-        getTileShifts();
-        redraw();
+        if (!fixShift) {
+            getTileShifts();
+            redraw();
+        }
     };
 
     document.getElementById("main_canvas").onmousemove = function (e) {
@@ -83,6 +93,18 @@ window.onload = function () {
             downloadTile(mouseCanvasX, mouseCanvasY);
         }
     };
+
+    document.getElementById("fix_size").onchange = function (e) {
+        fixSize = !fixSize;
+        document.getElementById("tile_width").disabled = fixSize;
+        syncTileSizes();
+    };
+
+    document.getElementById("fix_shift").onchange = function (e) {
+        fixShift = !fixShift;
+        document.getElementById("tile_shifty").disabled = fixShift;
+        syncTileShifts();
+    };
 };
 
 function getTileSize() {
@@ -95,6 +117,22 @@ function getTileSize() {
 function getTileShifts() {
     tile_shiftx = parseInt(document.getElementById("tile_shiftx").value);
     tile_shifty = parseInt(document.getElementById("tile_shifty").value);
+}
+
+function syncTileSizes() {
+    if (fixSize) {
+        document.getElementById("tile_width").value = document.getElementById("tile_height").value;
+        tile_width = tile_height;
+        redraw();
+    }
+}
+
+function syncTileShifts() {
+    if (fixShift) {
+        document.getElementById("tile_shifty").value = document.getElementById("tile_shiftx").value;
+        tile_shifty = tile_shiftx;
+        redraw();
+    }
 }
 
 function redraw() {
