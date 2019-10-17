@@ -5,3 +5,5 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+public_html/js/3d-party/
