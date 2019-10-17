@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Tile Extractor</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="my.js"></script>
+        <link rel="manifest" href="/manifest.webmanifest">
+    </head>
+    <body>
+        <h1>Tile Extractor</h1>
+        <h2>Tile Options:</h2>
+        <label>Height</label>
+        <input type="number" id="tile_height" min="1" value="24">
+        <br>
+        <label>Width</label>
+        <input type="number" id="tile_width" min="1" value="24">
+        <br>
+        <label>Shift X</label>
+        <input type="number" id="tile_shiftx" min="0" value="0">
+        <br>
+        <label>Shift Y</label>
+        <input type="number" id="tile_shifty" min="0" value="0">
+        <br>
+        <input type="file" id="file-input">
+        <br>
+        <canvas id="main_canvas" width="0" height="0"></canvas>
+
+    </body>
+</html>
