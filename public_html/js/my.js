@@ -74,12 +74,14 @@ window.onload = function () {
         drawGrid();
     };
 
-    document.getElementById("main_canvas").onmousedown = function (e) {
-        var canvas_rect = context.canvas.getBoundingClientRect();
-        var mouseCanvasX = e.clientX - canvas_rect.left;
-        var mouseCanvasY = e.clientY - canvas_rect.top;
+    document.getElementById("main_canvas").onmouseup = function (e) {
+        if (e.button === 0) {
+            var canvas_rect = context.canvas.getBoundingClientRect();
+            var mouseCanvasX = e.clientX - canvas_rect.left;
+            var mouseCanvasY = e.clientY - canvas_rect.top;
 
-        downloadTile(mouseCanvasX, mouseCanvasY);
+            downloadTile(mouseCanvasX, mouseCanvasY);
+        }
     };
 };
 
@@ -88,32 +90,32 @@ function getTileSize() {
     tile_width = parseInt(document.getElementById("tile_width").value);
     document.getElementById("tile_shiftx").max = tile_height - 1;
     document.getElementById("tile_shifty").max = tile_width - 1;
-};
+}
 
 function getTileShifts() {
     tile_shiftx = parseInt(document.getElementById("tile_shiftx").value);
     tile_shifty = parseInt(document.getElementById("tile_shifty").value);
-};
+}
 
 function redraw() {
     context.drawImage(source_image, 0, 0);
     drawGrid();
-};
+}
 
 function drawGrid() {
     context.beginPath();
     for (var y = 0; y <= canvas_height / tile_height; y++) {
         context.moveTo(0, y * tile_height + tile_shifty);
         context.lineTo(canvas_width, y * tile_height + tile_shifty);
-    };
+    }
 
     for (var x = 0; x <= canvas_width / tile_width; x++) {
         context.moveTo(x * tile_width + tile_shiftx, 0);
         context.lineTo(x * tile_width + tile_shiftx, canvas_height);
-    };
+    }
 
     context.stroke();
-};
+}
 
 function downloadTile(x, y) {
     var temp_canvas = document.createElement("canvas");
@@ -137,38 +139,42 @@ function downloadTile(x, y) {
     a.click();
     a.remove();
     temp_canvas.remove();
-};
+}
 
 function highlightTile(x, y) {
     var tileCoord = getTileCoordinate(x, y);
     context.fillRect(tileCoord.x, tileCoord.y, tile_width, tile_height);
-};
+}
 
 function getTileIndex(x, y) {
     return {
         x: Math.floor((x - getShifts().x) / tile_width),
         y: Math.floor((y - getShifts().y) / tile_height)
     };
-};
+}
 
 function getTileCoordinate(x, y) {
     return {
         x: getTileIndex(x, y).x * tile_width + getShifts().x,
         y: getTileIndex(x, y).y * tile_height + getShifts().y
     };
-};
+}
 
 function getShifts() {
     var shiftx = 0;
     var shifty = 0;
+
     if (tile_shiftx > 0) {
         shiftx = tile_shiftx - tile_width;
-    };
+    }
+
     if (tile_shifty > 0) {
         shifty = tile_shifty - tile_height;
-    };
+    }
+
     return {
         x: shiftx,
         y: shifty
     };
-};
+}
+
