@@ -16,7 +16,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}//tile-extractor
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/tile-extractor
           tags: |
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=ref,event=branch
