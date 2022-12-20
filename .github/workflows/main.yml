@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - "master"
+    paths:
+      - src/**
+      - Dockerfile
 
 jobs:
   build:
@@ -18,6 +21,7 @@ jobs:
         with:
           images: ${{ secrets.DOCKER_HUB_USERNAME }}/tile-extractor
           tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             type=schedule,pattern={{date 'YYYYMMDD'}}
             type=ref,event=branch
             type=semver,pattern={{version}}
