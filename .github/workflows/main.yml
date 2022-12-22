@@ -10,8 +10,13 @@ on:
       - Dockerfile
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  arm-build:
+    name: "Build ARM docker image"
+    runs-on:
+      - self-hosted
+      - Linux
+      - ARM64
+      - docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
