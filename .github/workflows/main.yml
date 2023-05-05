@@ -10,13 +10,9 @@ on:
       - Dockerfile
 
 jobs:
-  arm-build:
-    name: "Build ARM docker image"
+  build:
+    name: "Build multi arch docker image"
     runs-on:  ubuntu-latest
-#      - self-hosted
-#      - Linux
-#      - ARM64
-#      - docker
     steps:
       - name: Checkout
         uses: actions/checkout@v3
